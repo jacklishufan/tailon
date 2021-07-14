@@ -85,10 +85,26 @@ var app = new Vue({
                 });
 
                 this.fileList = fileList;
-
                 // Set file input to first entry in list.
                 if (!this.file) {
-                    this.file = fileList[0].files[0];
+                    var query = parseQueryString(window.location.search);
+                    if (Array.isArray(query.path)){
+                        var k = query.path[0];
+                        var files = fileList.map(function  (e) {
+                            return e.files;
+                        }).flat()
+                        
+                        files = files.filter(function  (e) {
+                            return e.alias==k || e.path==k;
+                        })
+                        if (files.length > 0) {
+                            this.file = files[0];
+                        } else {
+                            this.file = fileList[0].files[0];
+                        }
+                    } else {
+                        this.file = fileList[0].files[0];
+                    }
                 }
             } else {
                 var stream = data[0];
